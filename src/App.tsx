@@ -305,10 +305,15 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col font-sans selection:bg-white/30">
       {/* Atmosphere */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="bg-blob bg-cyan-500 w-[500px] h-[500px] -top-48 -left-48" />
-        <div className="bg-blob bg-purple-600 w-[600px] h-[600px] -bottom-48 -right-48 animation-delay-2000" />
-        <div className="bg-blob bg-pink-500 w-[400px] h-[400px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20" />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[#050505]">
+        {/* Core Animated Mesh */}
+        <div className="bg-blob bg-cyan-600 w-[800px] h-[800px] -top-[10%] -left-[10%] animate-blob opacity-20" />
+        <div className="bg-blob bg-purple-700 w-[900px] h-[900px] -bottom-[10%] -right-[10%] animate-blob-alt opacity-20" />
+        <div className="bg-blob bg-pink-600 w-[600px] h-[600px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-blob-pulse opacity-10" />
+        
+        {/* Accent Blobs for Depth */}
+        <div className="bg-blob bg-blue-500 w-[400px] h-[400px] top-[20%] right-[10%] animate-blob-alt animation-delay-2000 opacity-[0.15]" />
+        <div className="bg-blob bg-indigo-600 w-[500px] h-[500px] bottom-[20%] left-[5%] animate-blob animation-delay-4000 opacity-[0.15]" />
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col">

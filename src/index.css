@@ -19,7 +19,7 @@ body {
 }
 
 .bg-blob {
-  @apply absolute rounded-full filter blur-[100px] opacity-40 mix-blend-screen animate-blob;
+  @apply absolute rounded-full filter blur-[120px] opacity-30 mix-blend-screen;
 }
 
 @layer utilities {
@@ -32,20 +32,32 @@ body {
 }
 
 @keyframes blob {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(10%, -20%) scale(1.2); }
+  66% { transform: translate(-10%, 15%) scale(0.8); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes blob-alt {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(-15%, 10%) scale(0.9); }
+  66% { transform: translate(20%, -10%) scale(1.1); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes blob-pulse {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.1); }
 }
 
 .animate-blob {
-  animation: blob 7s infinite;
+  animation: blob 25s infinite alternate ease-in-out;
+}
+
+.animate-blob-alt {
+  animation: blob-alt 30s infinite alternate ease-in-out;
+}
+
+.animate-blob-pulse {
+  animation: blob-pulse 15s infinite ease-in-out;
 }

@@ -505,22 +505,30 @@ const App: React.FC = () => {
                       </div>
 
                       <div className="space-y-6">
+                        <div className="space-y-3">
+                          <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Overlay</label>
+                          <input 
+                            type="text" 
+                            placeholder="DRAFT" 
+                            value={tiltedText} 
+                            onChange={(e) => setTiltedText(e.target.value)} 
+                            className="w-full liquid-input py-4 text-sm" 
+                          />
+                        </div>
+
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-3">
-                            <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Overlay</label>
-                            <input 
-                              type="text" 
-                              placeholder="DRAFT" 
-                              value={tiltedText} 
-                              onChange={(e) => setTiltedText(e.target.value)} 
-                              className="w-full liquid-input py-3 text-xs" 
-                            />
-                          </div>
-                          <div className="space-y-3">
                             <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Angle</label>
-                            <div className="flex items-center gap-3 bg-white/5 p-3 rounded-2xl border border-white/5">
+                            <div className="flex items-center gap-3 liquid-input py-2 px-4 min-h-[56px]">
                               <input type="range" min="-90" max="90" value={tiltedAngle} onChange={(e) => setTiltedAngle(Number(e.target.value))} className="flex-1 accent-white h-1 bg-white/10 rounded-full appearance-none" />
                               <span className="text-[10px] font-mono text-slate-400 w-8">{tiltedAngle}°</span>
+                            </div>
+                          </div>
+                          <div className="space-y-3">
+                            <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Alpha</label>
+                            <div className="flex items-center gap-3 liquid-input py-2 px-4 min-h-[56px]">
+                              <input type="range" min="5" max="90" value={opacity} onChange={(e) => setOpacity(Number(e.target.value))} className="flex-1 accent-white h-1 bg-white/10 rounded-full appearance-none" />
+                              <span className="text-[10px] font-mono text-slate-400">{opacity}%</span>
                             </div>
                           </div>
                         </div>
@@ -528,29 +536,21 @@ const App: React.FC = () => {
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-3">
                             <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Theme</label>
-                            <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/5">
+                            <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/5 min-h-[56px]">
                               <button onClick={() => setWatermarkColor('white')} className={`flex-1 py-3 text-[9px] font-black rounded-xl transition-all ${watermarkColor === 'white' ? 'bg-white text-black' : 'text-slate-400 hover:text-white'}`}>WHITE</button>
                               <button onClick={() => setWatermarkColor('black')} className={`flex-1 py-3 text-[9px] font-black rounded-xl transition-all ${watermarkColor === 'black' ? 'bg-white text-black' : 'text-slate-400 hover:text-white'}`}>BLACK</button>
                             </div>
                           </div>
                           <div className="space-y-3">
-                            <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Alpha</label>
-                            <div className="flex items-center gap-3 bg-white/5 p-3.5 rounded-2xl border border-white/5 min-h-[52px]">
-                              <input type="range" min="5" max="90" value={opacity} onChange={(e) => setOpacity(Number(e.target.value))} className="flex-1 accent-white h-1 bg-white/10 rounded-full appearance-none" />
-                              <span className="text-[10px] font-mono text-slate-400">{opacity}%</span>
-                            </div>
+                            <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Typography</label>
+                            <select 
+                              value={selectedFont} 
+                              onChange={(e) => setSelectedFont(e.target.value)} 
+                              className="w-full liquid-input py-4 text-xs appearance-none cursor-pointer min-h-[56px]"
+                            >
+                              {FONTS.map(f => <option key={f} value={f} className="bg-[#111]">{f.toUpperCase()}</option>)}
+                            </select>
                           </div>
-                        </div>
-
-                        <div className="space-y-3">
-                          <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Typography</label>
-                          <select 
-                            value={selectedFont} 
-                            onChange={(e) => setSelectedFont(e.target.value)} 
-                            className="w-full liquid-input py-4 text-xs appearance-none cursor-pointer min-h-[56px]"
-                          >
-                            {FONTS.map(f => <option key={f} value={f} className="bg-[#111]">{f.toUpperCase()}</option>)}
-                          </select>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 pt-2">

@@ -50,6 +50,7 @@ const App: React.FC = () => {
   const [selectedPreviewId, setSelectedPreviewId] = useState<string | null>(null);
   const [templateName, setTemplateName] = useState('');
   const [showTemplateModal, setShowTemplateNameModal] = useState(false);
+  const [isSheetExpanded, setIsSheetExpanded] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const verifyInputRef = useRef<HTMLInputElement>(null);
@@ -452,20 +453,28 @@ const App: React.FC = () => {
 
             {/* Sidebar Controls (Settings Bottom Sheet) */}
             <div className="lg:w-[400px] shrink-0 order-2">
-              <aside className="fixed bottom-0 left-0 right-0 z-50 lg:relative lg:bottom-auto lg:z-0 glass-card p-8 rounded-t-[40px] lg:rounded-[32px] border-t lg:border border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] lg:shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar">
+              <aside className={`fixed bottom-0 left-0 right-0 z-50 lg:relative lg:bottom-auto lg:z-0 glass-card p-8 rounded-t-[40px] lg:rounded-[32px] border-t lg:border border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] lg:shadow-2xl transition-all duration-500 ease-in-out ${isSheetExpanded ? 'h-[85vh]' : 'h-[160px] lg:h-fit'} overflow-y-auto custom-scrollbar`}>
                 {/* Mobile Handle */}
-                <div className="w-12 h-1.5 bg-white/10 rounded-full mx-auto mb-8 lg:hidden" />
+                <div 
+                  onClick={() => setIsSheetExpanded(!isSheetExpanded)}
+                  className="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-8 lg:hidden cursor-pointer hover:bg-white/40 transition-colors" 
+                />
 
                 <div className="space-y-8">
                   {/* Settings Section */}
                   <div className="space-y-6">
-                    <div className="flex justify-between items-center mb-2">
+                    <div 
+                      onClick={() => window.innerWidth < 1024 && setIsSheetExpanded(!isSheetExpanded)}
+                      className="flex justify-between items-center mb-2 cursor-pointer lg:cursor-default"
+                    >
                       <h2 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] flex items-center gap-2">
                         <Palette className="w-3 h-3" /> Configuration
                       </h2>
-                      <button onClick={() => setShowTemplateNameModal(true)} className="p-2 hover:bg-white/10 rounded-full text-slate-500 transition-all active:scale-90" title="Save Configuration">
-                        <Save className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button onClick={(e) => { e.stopPropagation(); setShowTemplateNameModal(true); }} className="p-2 hover:bg-white/10 rounded-full text-slate-500 transition-all active:scale-90" title="Save Configuration">
+                          <Save className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
 
                     {templates.length > 0 && (

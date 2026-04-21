@@ -524,16 +524,34 @@ const App: React.FC = () => {
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-3">
                             <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Angle</label>
-                            <div className="flex items-center gap-3 liquid-input py-2 px-4 min-h-[56px]">
-                              <input type="range" min="-90" max="90" value={tiltedAngle} onChange={(e) => setTiltedAngle(Number(e.target.value))} className="flex-1 accent-white h-1 bg-white/10 rounded-full appearance-none" />
-                              <span className="text-[10px] font-mono text-slate-400 w-8">{tiltedAngle}°</span>
+                            <div className="relative liquid-input flex items-center px-4 py-2 min-h-[56px]">
+                              <input 
+                                type="range" 
+                                min="-90" 
+                                max="90" 
+                                value={tiltedAngle} 
+                                onChange={(e) => setTiltedAngle(Number(e.target.value))} 
+                                className="flex-1 accent-white h-1 bg-white/10 rounded-full appearance-none mr-10" 
+                              />
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/10 px-2 py-1 rounded-lg border border-white/10 pointer-events-none">
+                                <span className="text-[10px] font-mono text-white">{tiltedAngle}°</span>
+                              </div>
                             </div>
                           </div>
                           <div className="space-y-3">
                             <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Alpha</label>
-                            <div className="flex items-center gap-3 liquid-input py-2 px-4 min-h-[56px]">
-                              <input type="range" min="5" max="90" value={opacity} onChange={(e) => setOpacity(Number(e.target.value))} className="flex-1 accent-white h-1 bg-white/10 rounded-full appearance-none" />
-                              <span className="text-[10px] font-mono text-slate-400">{opacity}%</span>
+                            <div className="relative liquid-input flex items-center px-4 py-2 min-h-[56px]">
+                              <input 
+                                type="range" 
+                                min="5" 
+                                max="90" 
+                                value={opacity} 
+                                onChange={(e) => setOpacity(Number(e.target.value))} 
+                                className="flex-1 accent-white h-1 bg-white/10 rounded-full appearance-none mr-10" 
+                              />
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/10 px-2 py-1 rounded-lg border border-white/10 pointer-events-none">
+                                <span className="text-[10px] font-mono text-white">{opacity}%</span>
+                              </div>
                             </div>
                           </div>
                         </div>

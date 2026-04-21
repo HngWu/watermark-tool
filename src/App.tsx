@@ -458,7 +458,7 @@ const App: React.FC = () => {
 
             {/* Sidebar Controls (Settings Bottom Sheet) */}
             <div className="lg:w-[400px] shrink-0 order-2">
-              <aside className={`fixed bottom-0 left-0 right-0 z-50 lg:relative lg:bottom-auto lg:z-0 glass-card p-8 rounded-t-[40px] lg:rounded-[32px] border-t lg:border border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] lg:shadow-2xl transition-all duration-500 ease-in-out ${isSheetExpanded ? 'h-[85vh]' : 'h-[160px] lg:h-fit'} overflow-y-auto custom-scrollbar`}>
+              <aside className={`fixed bottom-0 left-0 right-0 z-50 lg:relative lg:bottom-auto lg:z-0 glass-card p-8 rounded-t-[40px] lg:rounded-[32px] border-t lg:border border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] lg:shadow-2xl transition-all duration-500 ease-in-out ${isSheetExpanded ? 'h-[85vh]' : 'h-[180px] lg:h-fit'} overflow-y-auto custom-scrollbar`}>
                 {/* Mobile Handle */}
                 <div 
                   onClick={() => setIsSheetExpanded(!isSheetExpanded)}
@@ -524,34 +524,30 @@ const App: React.FC = () => {
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-3">
                             <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Angle</label>
-                            <div className="relative liquid-input flex items-center px-4 py-2 min-h-[56px]">
+                            <div className="liquid-input flex items-center justify-between px-5 min-h-[56px]">
                               <input 
                                 type="range" 
                                 min="-90" 
                                 max="90" 
                                 value={tiltedAngle} 
                                 onChange={(e) => setTiltedAngle(Number(e.target.value))} 
-                                className="flex-1 accent-white h-1 bg-white/10 rounded-full appearance-none mr-10" 
+                                className="w-[100px] accent-white h-1 bg-white/10 rounded-full appearance-none" 
                               />
-                              <div className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/10 px-2 py-1 rounded-lg border border-white/10 pointer-events-none">
-                                <span className="text-[10px] font-mono text-white">{tiltedAngle}°</span>
-                              </div>
+                              <span className="text-[10px] font-mono text-white">{tiltedAngle}°</span>
                             </div>
                           </div>
                           <div className="space-y-3">
                             <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] ml-1">Alpha</label>
-                            <div className="relative liquid-input flex items-center px-4 py-2 min-h-[56px]">
+                            <div className="liquid-input flex items-center justify-between px-5 min-h-[56px]">
                               <input 
                                 type="range" 
                                 min="5" 
                                 max="90" 
                                 value={opacity} 
                                 onChange={(e) => setOpacity(Number(e.target.value))} 
-                                className="flex-1 accent-white h-1 bg-white/10 rounded-full appearance-none mr-10" 
+                                className="w-[100px] accent-white h-1 bg-white/10 rounded-full appearance-none" 
                               />
-                              <div className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/10 px-2 py-1 rounded-lg border border-white/10 pointer-events-none">
-                                <span className="text-[10px] font-mono text-white">{opacity}%</span>
-                              </div>
+                              <span className="text-[10px] font-mono text-white">{opacity}%</span>
                             </div>
                           </div>
                         </div>

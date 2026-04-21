@@ -51,6 +51,28 @@ const App: React.FC = () => {
   const [templateName, setTemplateName] = useState('');
   const [showTemplateModal, setShowTemplateNameModal] = useState(false);
   const [isSheetExpanded, setIsSheetExpanded] = useState<boolean>(false);
+  const [mousePos, setMousePosition] = useState({ x: 0, y: 0 });
+  const mouseRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    let frameId: number;
+    const updateMouse = () => {
+      setMousePosition({ x: mouseRef.current.x, y: mouseRef.current.y });
+      frameId = requestAnimationFrame(updateMouse);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    frameId = requestAnimationFrame(updateMouse);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(frameId);
+    };
+  }, []);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const verifyInputRef = useRef<HTMLInputElement>(null);
@@ -306,10 +328,25 @@ const App: React.FC = () => {
     <div className="min-h-screen relative overflow-hidden flex flex-col font-sans selection:bg-white/30">
       {/* Atmosphere */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-[#050505]">
-        {/* Core Animated Mesh */}
-        <div className="bg-blob bg-cyan-600 w-[800px] h-[800px] -top-[10%] -left-[10%] animate-blob opacity-20" />
-        <div className="bg-blob bg-purple-700 w-[900px] h-[900px] -bottom-[10%] -right-[10%] animate-blob-alt opacity-20" />
-        <div className="bg-blob bg-pink-600 w-[600px] h-[600px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-blob-pulse opacity-10" />
+        {/* Mouse Follower Light */}
+        <div 
+          className="absolute rounded-full filter blur-[150px] opacity-10 bg-white w-[600px] h-[600px] transition-transform duration-1000 ease-out"
+          style={{ transform: `translate(${mousePos.x - 300}px, ${mousePos.y - 300}px)` }}
+        />
+
+        {/* Core Animated Mesh with Parallax */}
+        <div 
+          className="bg-blob bg-cyan-600 w-[800px] h-[800px] -top-[10%] -left-[10%] animate-blob opacity-20 transition-transform duration-700 ease-out" 
+          style={{ transform: `translate(${(mousePos.x - window.innerWidth/2) * 0.02}px, ${(mousePos.y - window.innerHeight/2) * 0.02}px)` }}
+        />
+        <div 
+          className="bg-blob bg-purple-700 w-[900px] h-[900px] -bottom-[10%] -right-[10%] animate-blob-alt opacity-20 transition-transform duration-1000 ease-out" 
+          style={{ transform: `translate(${(mousePos.x - window.innerWidth/2) * -0.03}px, ${(mousePos.y - window.innerHeight/2) * -0.03}px)` }}
+        />
+        <div 
+          className="bg-blob bg-pink-600 w-[600px] h-[600px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-blob-pulse opacity-10 transition-transform duration-500 ease-out" 
+          style={{ transform: `translate(${(mousePos.x - window.innerWidth/2) * 0.01}px, ${(mousePos.y - window.innerHeight/2) * 0.01}px)` }}
+        />
         
         {/* Accent Blobs for Depth */}
         <div className="bg-blob bg-blue-500 w-[400px] h-[400px] top-[20%] right-[10%] animate-blob-alt animation-delay-2000 opacity-[0.15]" />

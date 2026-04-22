@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { syncWithCloud } from '../utils/syncManager';
 
 export interface VerifyResult {
   recipient: string;
@@ -213,3 +214,20 @@ export const useWatermarkStore = create<WatermarkState>()(
     }
   )
 );
+
+useWatermarkStore.subscribe((state, prevState) => {
+  if (state.templates !== prevState.templates && navigator.onLine) {
+    const settings = {
+      recipient: state.recipient,
+      opacity: state.opacity,
+      watermarkMethod: state.watermarkMethod,
+      signWatermark: state.signWatermark,
+      forensicTracking: state.forensicTracking,
+      selectedFont: state.selectedFont,
+      tiltedText: state.tiltedText,
+      tiltedAngle: state.tiltedAngle,
+      watermarkColor: state.watermarkColor
+    };
+    syncWithCloud(state.templates, settings).catch(console.error);
+  }
+});

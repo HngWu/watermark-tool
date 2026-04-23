@@ -77,14 +77,12 @@ First, obtain a hosted MariaDB instance from a provider like **Aiven**, **Railwa
     - `DB_USER`: Database username.
     - `DB_PASSWORD`: Database password.
     - `DB_NAME`: `secureasset`.
-    - `NODE_ENV`: `production`.
 5.  **Deploy:** Click **Deploy**. Vercel will now correctly build the frontend and serve the backend from the `api/` directory.
 
-### ⚠️ Troubleshooting 404
-If you still see a 404 after deployment:
-1. Ensure the **Output Directory** in the Vercel Dashboard is **Empty** (not set to `packages/frontend/dist`).
-2. Ensure you have added the `DB_*` environment variables, as the backend will fail to start without them.
-3. Check the Vercel **Function Logs** to see if the `api/index.ts` is throwing an error.
+### ⚠️ Troubleshooting Build Failures
+If you see a `sh: line 1: tsc: command not found` error during the build:
+1. Ensure you have **NOT** manually set `NODE_ENV: production` in the Vercel Dashboard Environment Variables. Vercel sets this automatically during runtime, but setting it manually in the dashboard can cause the build process to skip installing necessary tools like `typescript`.
+2. If you must keep `NODE_ENV: production`, ensure you set `NPM_CONFIG_PRODUCTION=false` in the Vercel dashboard to force the installation of build tools.
 
 
 ### 3. Verification

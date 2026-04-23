@@ -67,11 +67,12 @@ First, obtain a hosted MariaDB instance from a provider like **Aiven**, **Railwa
 
 ### 2. Vercel Project Setup
 1.  **Connect to GitHub:** Push your repository to GitHub and link it to a new project in the [Vercel Dashboard](https://vercel.com).
-2.  **Framework Preset:** Set this to **Vite** or **Other**.
-3.  **Build Settings:**
+2.  **Root Directory:** ⚠️ **CRITICAL:** Ensure the **Root Directory** is left at its default (the root of the repository). **DO NOT** set it to `packages` or `packages/frontend`, as this will break the npm workspace and cause `tsc: command not found` errors.
+3.  **Framework Preset:** Set this to **Vite** or **Other**.
+4.  **Build Settings:**
     - **Build Command:** `npm run build`
     - **Output Directory:** `packages/frontend/dist`  <-- **CRITICAL: SET THIS MANUALLY**
-4.  **Environment Variables:** Add the following variables in the Vercel project settings:
+5.  **Environment Variables:** Add the following variables in the Vercel project settings:
     - `DB_HOST`: Your cloud database host.
     - `DB_PORT`: `3306` (or as specified by your provider).
     - `DB_USER`: Database username.

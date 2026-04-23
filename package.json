@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build:frontend",
+    "build": "npm run build:frontend && rm -rf public && mkdir -p public && cp -r packages/frontend/dist/* public/",
     "dev:frontend": "npm run dev -w packages/frontend",
     "dev:backend": "npm run dev -w packages/backend",
     "build:frontend": "npm run build -w packages/frontend",

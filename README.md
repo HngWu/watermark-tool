@@ -67,10 +67,10 @@ First, obtain a hosted MariaDB instance from a provider like **Aiven**, **Railwa
 
 ### 2. Vercel Project Setup
 1.  **Connect to GitHub:** Push your repository to GitHub and link it to a new project in the [Vercel Dashboard](https://vercel.com).
-2.  **Framework Preset:** Set this to **Vite** or **Other**.
+2.  **Framework Preset:** Set this to **Other** (important for monorepos).
 3.  **Build Settings:**
     - **Build Command:** `npm run build`
-    - **Output Directory:** `packages/frontend/dist`
+    - **Output Directory:** Leave this **Empty** (default). Vercel will automatically serve from the `public` folder created by the build command.
 4.  **Environment Variables:** Add the following variables in the Vercel project settings:
     - `DB_HOST`: Your cloud database host.
     - `DB_PORT`: `3306` (or as specified by your provider).
@@ -82,7 +82,7 @@ First, obtain a hosted MariaDB instance from a provider like **Aiven**, **Railwa
 
 ### ⚠️ Troubleshooting 404
 If you still see a 404 after deployment:
-1. Ensure the **Output Directory** in the Vercel Dashboard is explicitly set to `packages/frontend/dist`.
+1. Ensure the **Output Directory** in the Vercel Dashboard is **Empty** (not set to `packages/frontend/dist`).
 2. Ensure you have added the `DB_*` environment variables, as the backend will fail to start without them.
 3. Check the Vercel **Function Logs** to see if the `api/index.ts` is throwing an error.
 

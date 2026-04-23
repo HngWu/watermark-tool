@@ -70,7 +70,7 @@ First, obtain a hosted MariaDB instance from a provider like **Aiven**, **Railwa
 2.  **Framework Preset:** Set this to **Other** (Vercel will detect the root `package.json`).
 3.  **Build Settings:**
     - **Build Command:** `npm run build`
-    - **Output Directory:** `packages/frontend/dist`
+    - **Output Directory:** Leave this **Empty** (default). Vercel will automatically serve from the `public` folder created by the build command.
 4.  **Environment Variables:** Add the following variables in the Vercel project settings:
     - `DB_HOST`: Your cloud database host.
     - `DB_PORT`: `3306` (or as specified by your provider).

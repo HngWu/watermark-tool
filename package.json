@@ -5,10 +5,17 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "npm run build:frontend",
     "dev:frontend": "npm run dev -w packages/frontend",
     "dev:backend": "npm run dev -w packages/backend",
     "build:frontend": "npm run build -w packages/frontend",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mysql2": "^3.22.2"
   }
 }

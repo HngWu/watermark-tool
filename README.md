@@ -67,15 +67,18 @@ First, obtain a hosted MariaDB instance from a provider like **Aiven**, **Railwa
 
 ### 2. Vercel Project Setup
 1.  **Connect to GitHub:** Push your repository to GitHub and link it to a new project in the [Vercel Dashboard](https://vercel.com).
-2.  **Framework Preset:** Vercel should auto-detect the monorepo. Ensure the **Root Directory** is the project root.
-3.  **Environment Variables:** Add the following variables in the Vercel project settings:
+2.  **Framework Preset:** Set this to **Other** (Vercel will detect the root `package.json`).
+3.  **Build Settings:**
+    - **Build Command:** `npm run build`
+    - **Output Directory:** `packages/frontend/dist`
+4.  **Environment Variables:** Add the following variables in the Vercel project settings:
     - `DB_HOST`: Your cloud database host.
     - `DB_PORT`: `3306` (or as specified by your provider).
     - `DB_USER`: Database username.
     - `DB_PASSWORD`: Database password.
     - `DB_NAME`: `secureasset`.
-    - `NODE_ENV`: `production` (enables SSL for DB).
-4.  **Deploy:** Click **Deploy**. Vercel will use `vercel.json` to build the React frontend and deploy the Express backend as a serverless function.
+    - `NODE_ENV`: `production`.
+5.  **Deploy:** Click **Deploy**. Vercel will now correctly build the frontend and host the backend bridge in the `api/` directory.
 
 ### 3. Verification
 Once deployed, your frontend will be live at `https://your-project.vercel.app`, and your backend API will be accessible at `https://your-project.vercel.app/api`.

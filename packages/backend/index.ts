@@ -1,20 +1,24 @@
 import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const pool = mysql.createPool({
-  host: '127.0.0.1',
-  port: 3307,
-  user: 'user',
-  password: 'password',
-  database: 'secureasset',
+  host: process.env.DB_HOST || '127.0.0.1',
+  port: Number(process.env.DB_PORT) || 3307,
+  user: process.env.DB_USER || 'user',
+  password: process.env.DB_PASSWORD || 'password',
+  database: process.env.DB_NAME || 'secureasset',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
 });
 
 app.get('/api/health', async (req, res) => {
@@ -59,4 +63,8 @@ app.post('/api/sync', async (req, res) => {
   }
 });
 
-app.listen(3001, () => console.log('Backend running on port 3001'));
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(3001, () => console.log('Backend running on port 3001'));
+}
+
+export default app;

@@ -67,22 +67,27 @@ First, obtain a hosted MariaDB instance from a provider like **Aiven**, **Railwa
 
 ### 2. Vercel Project Setup
 1.  **Connect to GitHub:** Push your repository to GitHub and link it to a new project in the [Vercel Dashboard](https://vercel.com).
-2.  **Framework Preset:** Set this to **Other** (important for monorepos).
+2.  **Framework Preset:** Set this to **Vite** or **Other**.
 3.  **Build Settings:**
     - **Build Command:** `npm run build`
-    - **Output Directory:** Leave this **Empty** (default). Vercel will automatically serve from the `public` folder created by the build command.
+    - **Output Directory:** `packages/frontend/dist`  <-- **CRITICAL: SET THIS MANUALLY**
 4.  **Environment Variables:** Add the following variables in the Vercel project settings:
     - `DB_HOST`: Your cloud database host.
     - `DB_PORT`: `3306` (or as specified by your provider).
     - `DB_USER`: Database username.
     - `DB_PASSWORD`: Database password.
     - `DB_NAME`: `secureasset`.
-5.  **Deploy:** Click **Deploy**. Vercel will now correctly build the frontend and serve the backend from the `api/` directory.
+5.  **Deploy:** Click **Deploy**. Vercel will now build the frontend and correctly serve both the UI and the backend bridge.
 
 ### ⚠️ Troubleshooting Build Failures
 If you see a `sh: line 1: tsc: command not found` error during the build:
 1. Ensure you have **NOT** manually set `NODE_ENV: production` in the Vercel Dashboard Environment Variables. Vercel sets this automatically during runtime, but setting it manually in the dashboard can cause the build process to skip installing necessary tools like `typescript`.
 2. If you must keep `NODE_ENV: production`, ensure you set `NPM_CONFIG_PRODUCTION=false` in the Vercel dashboard to force the installation of build tools.
+
+### ⚠️ Troubleshooting 404
+If you see a 404 after deployment:
+1. Ensure the **Output Directory** in the Vercel Dashboard is explicitly set to `packages/frontend/dist`.
+2. Check the Vercel **Function Logs** to see if the `api/index.ts` is throwing a database connection error.
 
 
 ### 3. Verification

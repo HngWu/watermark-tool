@@ -1,73 +1,97 @@
-# React + TypeScript + Vite
+# SecureAsset: Forensic Watermarking & Asset Protection
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SecureAsset is a high-performance, forensic watermarking tool designed for asset protection and verification. It features a modern **LiquidGlass UI** and a **local-first, cloud-synced** architecture powered by MariaDB.
 
-Currently, two official plugins are available:
+## 🚀 Key Features
+- **Forensic Watermarking:** Supports LSB, DCT, and EXIF embedding layers for robust protection.
+- **LiquidGlass UI:** High-contrast, dark-themed interface with mobile-optimized controls.
+- **Real-time Synchronization:** Automated background sync with a cloud-hosted MariaDB database.
+- **Verifiable Integrity:** Deep-scan authentication to verify forensic digital signatures and ownership data.
+- **Monorepo Architecture:** Organized as an npm workspace for seamless full-stack development.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Tech Stack
+- **Frontend:** React 19, Vite, Tailwind CSS, Lucide-React, Zustand.
+- **Backend:** Node.js, Express, MySQL2 (compatible with MariaDB).
+- **Database:** MariaDB (Local Docker or Cloud-hosted).
+- **Deployment:** Optimized for Vercel Serverless Functions.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 💻 Local Development Setup
 
-## Expanding the ESLint configuration
+### 1. Prerequisites
+- Node.js (v18+)
+- npm (v10+)
+- Docker Desktop (optional, for local DB)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2. Installation
+Clone the repository and install all dependencies:
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 3. Database Configuration
+You can run MariaDB locally via Docker:
+```bash
+npm run db:up
 ```
+*Note: The local database is mapped to port **3307** to avoid conflicts.*
+
+### 4. Environment Variables
+Create a `.env` file in `packages/backend/`:
+```bash
+cp packages/backend/.env.example packages/backend/.env
+```
+Fill in your local or cloud database credentials in `packages/backend/.env`.
+
+### 5. Start the Application
+Run both frontend and backend in development mode:
+```bash
+# Terminal 1: Backend
+npm run dev:backend
+
+# Terminal 2: Frontend
+npm run dev:frontend
+```
+
+---
+
+## ☁️ Hosting & Deployment Guide (Vercel)
+
+SecureAsset is pre-configured for **Vercel** as a monorepo.
+
+### 1. Database Hosting (Cloud MariaDB)
+First, obtain a hosted MariaDB instance from a provider like **Aiven**, **Railway**, or **PlanetScale**. 
+- Create a database named `secureasset`.
+- Run the table creation scripts (see `infrastructure/db/changelog.xml` or manual SQL in project history).
+
+### 2. Vercel Project Setup
+1.  **Connect to GitHub:** Push your repository to GitHub and link it to a new project in the [Vercel Dashboard](https://vercel.com).
+2.  **Framework Preset:** Vercel should auto-detect the monorepo. Ensure the **Root Directory** is the project root.
+3.  **Environment Variables:** Add the following variables in the Vercel project settings:
+    - `DB_HOST`: Your cloud database host.
+    - `DB_PORT`: `3306` (or as specified by your provider).
+    - `DB_USER`: Database username.
+    - `DB_PASSWORD`: Database password.
+    - `DB_NAME`: `secureasset`.
+    - `NODE_ENV`: `production` (enables SSL for DB).
+4.  **Deploy:** Click **Deploy**. Vercel will use `vercel.json` to build the React frontend and deploy the Express backend as a serverless function.
+
+### 3. Verification
+Once deployed, your frontend will be live at `https://your-project.vercel.app`, and your backend API will be accessible at `https://your-project.vercel.app/api`.
+
+---
+
+## 📂 Project Structure
+```text
+├── packages/
+│   ├── frontend/      # React + Vite UI
+│   └── backend/       # Express + MySQL2 API
+├── infrastructure/
+│   └── db/            # Database schema & Liquibase migrations
+├── vercel.json        # Vercel monorepo configuration
+└── package.json       # Root workspace configuration
+```
+
+## 📜 License
+This project is private and intended for secure asset management.

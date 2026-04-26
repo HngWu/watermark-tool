@@ -41,10 +41,10 @@ body {
 }
 
 .crypto-mask {
-  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 50%);
-  mask-image: linear-gradient(to bottom, black 50%, transparent 50%);
-  -webkit-mask-size: 100% 200%;
-  mask-size: 100% 200%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(0,0,0,0.1) 45%, black 50%, transparent 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(0,0,0,0.1) 45%, black 50%, transparent 55%, transparent 100%);
+  -webkit-mask-size: 100% 300%;
+  mask-size: 100% 300%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   animation: scan-mask 8s infinite linear;
@@ -56,8 +56,8 @@ body {
     mask-position: 0 100%;
   }
   100% { 
-    -webkit-mask-position: 0 0%; 
-    mask-position: 0 0%;
+    -webkit-mask-position: 0 -100%; 
+    mask-position: 0 -100%;
   }
 }
 

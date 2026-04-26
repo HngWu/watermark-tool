@@ -24,7 +24,10 @@ const ensurePiexif = (): Promise<void> => {
 const COLORS = ['text-white', 'text-black', 'text-slate-400', 'text-zinc-600'];
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
 
-const generateChunk = () => Array.from({ length: 8 }).map(() => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+const generateChunk = () => {
+  const len = Math.floor(Math.random() * 10) + 4; // 4 to 14 chars
+  return Array.from({ length: len }).map(() => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+};
 
 const generateNodes = () => {
   return Array.from({ length: 150 }).map((_, i) => ({
@@ -40,13 +43,10 @@ const CryptoBackground: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [randomNodes, setRandomNodes] = useState(generateNodes());
 
-  useEffect(() => {
-    // Sync with 8s CSS animation to generate new positions every scan
-    const reshuffleInterval = setInterval(() => {
-      setRandomNodes(generateNodes());
-    }, 8000);
-    return () => clearInterval(reshuffleInterval);
-  }, []);
+  // Handle the invisible reshuffle exactly when the CSS animation restarts
+  const handleAnimationRestart = () => {
+    setRandomNodes(generateNodes());
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -57,7 +57,9 @@ const CryptoBackground: React.FC = () => {
       for (let i = 0; i < numToScramble; i++) {
         const idx = Math.floor(Math.random() * elements.length);
         const el = elements[idx] as HTMLElement;
-        el.innerText = generateChunk();
+        // Maintain the same length to avoid layout jitter during scramble
+        const currentLen = el.innerText.length;
+        el.innerText = Array.from({ length: currentLen }).map(() => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
       }
     }, 50);
     return () => clearInterval(interval);
@@ -80,7 +82,10 @@ const CryptoBackground: React.FC = () => {
       </div>
       
       {/* Highlight Layer (Masked, Glowing Monochrome) */}
-      <div className="absolute inset-0 crypto-mask">
+      <div 
+        className="absolute inset-0 crypto-mask"
+        onAnimationIteration={handleAnimationRestart}
+      >
         {randomNodes.map(node => (
           <span 
             key={`${node.id}-highlight`} 

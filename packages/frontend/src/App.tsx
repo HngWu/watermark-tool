@@ -26,14 +26,33 @@ const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
 
 const generateChunk = () => Array.from({ length: 8 }).map(() => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
 
+const generateNodes = () => {
+  return Array.from({ length: 150 }).map((_, i) => ({
+    id: `node-${Date.now()}-${i}`,
+    initial: generateChunk(),
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    top: `${Math.random() * 100}%`,
+    left: `${Math.random() * 100}%`
+  }));
+};
+
 const CryptoBackground: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [randomNodes, setRandomNodes] = useState(generateNodes());
+
+  useEffect(() => {
+    // Sync with 8s CSS animation to generate new positions every scan
+    const reshuffleInterval = setInterval(() => {
+      setRandomNodes(generateNodes());
+    }, 8000);
+    return () => clearInterval(reshuffleInterval);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (!containerRef.current) return;
       const elements = containerRef.current.querySelectorAll('[data-crypto]');
-      // Scramble 15% of elements every 50ms to create dynamic gibberish
+      // Scramble a subset of elements every 50ms to create dynamic gibberish
       const numToScramble = Math.max(1, Math.floor(elements.length * 0.15));
       for (let i = 0; i < numToScramble; i++) {
         const idx = Math.floor(Math.random() * elements.length);
@@ -44,24 +63,13 @@ const CryptoBackground: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Generate 150 random floating cryptographic chunks
-  const randomNodes = useMemo(() => {
-    return Array.from({ length: 150 }).map((_, i) => ({
-      id: `node-${i}`,
-      initial: generateChunk(),
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`
-    }));
-  }, []);
-
   return (
     <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none select-none font-mono text-[8px] md:text-[10px] leading-[2.5] whitespace-nowrap z-0 opacity-80">
       {/* Base Layer (Faint, Static) */}
       <div className="absolute inset-0 opacity-[0.05]">
         {randomNodes.map(node => (
           <span 
-            key={node.id} 
+            key={`${node.id}-base`} 
             data-crypto 
             className="absolute text-white"
             style={{ top: node.top, left: node.left }}

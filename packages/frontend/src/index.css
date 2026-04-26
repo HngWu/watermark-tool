@@ -18,8 +18,26 @@ body {
   @apply bg-[#050505] text-slate-200 overflow-x-hidden;
 }
 
-.bg-blob {
-  @apply absolute rounded-full filter blur-[120px] opacity-30 mix-blend-screen;
+.security-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+}
+
+.scan-line {
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.2) 100%);
+  height: 200px;
+  width: 100%;
+  position: absolute;
+  top: -200px;
+  animation: scan 8s infinite linear;
+}
+
+@keyframes scan {
+  0% { top: -200px; }
+  100% { top: 100%; }
 }
 
 @layer utilities {
@@ -29,35 +47,4 @@ body {
   .animation-delay-4000 {
     animation-delay: 4s;
   }
-}
-
-@keyframes blob {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(10%, -20%) scale(1.2); }
-  66% { transform: translate(-10%, 15%) scale(0.8); }
-  100% { transform: translate(0px, 0px) scale(1); }
-}
-
-@keyframes blob-alt {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(-15%, 10%) scale(0.9); }
-  66% { transform: translate(20%, -10%) scale(1.1); }
-  100% { transform: translate(0px, 0px) scale(1); }
-}
-
-@keyframes blob-pulse {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.1); }
-}
-
-.animate-blob {
-  animation: blob 25s infinite alternate ease-in-out;
-}
-
-.animate-blob-alt {
-  animation: blob-alt 30s infinite alternate ease-in-out;
-}
-
-.animate-blob-pulse {
-  animation: blob-pulse 15s infinite ease-in-out;
 }

@@ -54,6 +54,12 @@ const App: React.FC = () => {
   const [mousePos, setMousePosition] = useState({ x: 0, y: 0 });
   const mouseRef = useRef({ x: 0, y: 0 });
 
+  // Mobile sheet height states
+  const [sheetHeight, setSheetHeight] = useState<number>(180);
+  const [isDraggingSheet, setIsDraggingSheet] = useState<boolean>(false);
+  const startY = useRef<number>(0);
+  const startHeight = useRef<number>(0);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
@@ -73,6 +79,51 @@ const App: React.FC = () => {
       cancelAnimationFrame(frameId);
     };
   }, []);
+
+  const handleDragStart = (e: React.TouchEvent | React.MouseEvent) => {
+    if (window.innerWidth >= 1024) return;
+    setIsDraggingSheet(true);
+    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+    startY.current = clientY;
+    startHeight.current = sheetHeight;
+    document.body.style.overflow = 'hidden';
+  };
+
+  useEffect(() => {
+    if (!isDraggingSheet) return;
+
+    const handleMove = (e: TouchEvent | MouseEvent) => {
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+      const deltaY = startY.current - clientY;
+      const newHeight = Math.max(180, Math.min(window.innerHeight * 0.85, startHeight.current + deltaY));
+      setSheetHeight(newHeight);
+    };
+
+    const handleEnd = () => {
+      setIsDraggingSheet(false);
+      document.body.style.overflow = '';
+      if (sheetHeight < window.innerHeight * 0.4) {
+        setSheetHeight(180);
+        setIsSheetExpanded(false);
+      } else {
+        setSheetHeight(window.innerHeight * 0.85);
+        setIsSheetExpanded(true);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleEnd);
+    window.addEventListener('touchmove', handleMove, { passive: false });
+    window.addEventListener('touchend', handleEnd);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleEnd);
+      window.removeEventListener('touchmove', handleMove);
+      window.removeEventListener('touchend', handleEnd);
+      document.body.style.overflow = '';
+    };
+  }, [isDraggingSheet, sheetHeight]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const verifyInputRef = useRef<HTMLInputElement>(null);
@@ -326,31 +377,17 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col font-sans selection:bg-white/30">
-      {/* Atmosphere */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-[#050505]">
-        {/* Mouse Follower Light */}
+      {/* Atmosphere: Minimalistic Security Background */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[#050505] overflow-hidden">
+        {/* Subtle grid */}
+        <div className="absolute inset-0 security-grid opacity-50"></div>
+        {/* Scanning line */}
+        <div className="scan-line"></div>
+        {/* Mouse Follower Glow (Subtle White) */}
         <div 
-          className="absolute rounded-full filter blur-[150px] opacity-10 bg-white w-[600px] h-[600px] transition-transform duration-1000 ease-out"
-          style={{ transform: `translate(${mousePos.x - 300}px, ${mousePos.y - 300}px)` }}
+          className="absolute rounded-full filter blur-[100px] opacity-20 bg-white/10 w-[400px] h-[400px] transition-transform duration-[1500ms] ease-out mix-blend-screen"
+          style={{ transform: `translate(${mousePos.x - 200}px, ${mousePos.y - 200}px)` }}
         />
-
-        {/* Core Animated Mesh with Parallax */}
-        <div 
-          className="bg-blob bg-cyan-600 w-[800px] h-[800px] -top-[10%] -left-[10%] animate-blob opacity-20 transition-transform duration-700 ease-out" 
-          style={{ transform: `translate(${(mousePos.x - window.innerWidth/2) * 0.02}px, ${(mousePos.y - window.innerHeight/2) * 0.02}px)` }}
-        />
-        <div 
-          className="bg-blob bg-purple-700 w-[900px] h-[900px] -bottom-[10%] -right-[10%] animate-blob-alt opacity-20 transition-transform duration-1000 ease-out" 
-          style={{ transform: `translate(${(mousePos.x - window.innerWidth/2) * -0.03}px, ${(mousePos.y - window.innerHeight/2) * -0.03}px)` }}
-        />
-        <div 
-          className="bg-blob bg-pink-600 w-[600px] h-[600px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-blob-pulse opacity-10 transition-transform duration-500 ease-out" 
-          style={{ transform: `translate(${(mousePos.x - window.innerWidth/2) * 0.01}px, ${(mousePos.y - window.innerHeight/2) * 0.01}px)` }}
-        />
-        
-        {/* Accent Blobs for Depth */}
-        <div className="bg-blob bg-blue-500 w-[400px] h-[400px] top-[20%] right-[10%] animate-blob-alt animation-delay-2000 opacity-[0.15]" />
-        <div className="bg-blob bg-indigo-600 w-[500px] h-[500px] bottom-[20%] left-[5%] animate-blob animation-delay-4000 opacity-[0.15]" />
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col">
@@ -495,18 +532,35 @@ const App: React.FC = () => {
 
             {/* Sidebar Controls (Settings Bottom Sheet) */}
             <div className="lg:w-[400px] shrink-0 order-2">
-              <aside className={`fixed bottom-0 left-0 right-0 z-50 lg:relative lg:bottom-auto lg:z-0 glass-card p-8 rounded-t-[40px] lg:rounded-[32px] border-t lg:border border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] lg:shadow-2xl transition-all duration-500 ease-in-out ${isSheetExpanded ? 'h-[85vh]' : 'h-[180px] lg:h-fit'} overflow-y-auto custom-scrollbar`}>
+              <aside 
+                className={`fixed bottom-0 left-0 right-0 z-50 lg:relative lg:bottom-auto lg:z-0 glass-card p-8 rounded-t-[40px] lg:rounded-[32px] border-t lg:border border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] lg:shadow-2xl ${!isDraggingSheet ? 'transition-all duration-500 ease-in-out' : ''} overflow-y-auto custom-scrollbar`}
+                style={{ height: window.innerWidth >= 1024 ? 'fit-content' : `${sheetHeight}px` }}
+              >
                 {/* Mobile Handle */}
                 <div 
-                  onClick={() => setIsSheetExpanded(!isSheetExpanded)}
-                  className="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-8 lg:hidden cursor-pointer hover:bg-white/40 transition-colors" 
+                  onMouseDown={handleDragStart}
+                  onTouchStart={handleDragStart}
+                  onClick={() => {
+                     if (!isDraggingSheet) {
+                       const nextState = !isSheetExpanded;
+                       setIsSheetExpanded(nextState);
+                       setSheetHeight(nextState ? window.innerHeight * 0.85 : 180);
+                     }
+                  }}
+                  className="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-8 lg:hidden cursor-grab hover:bg-white/40 transition-colors" 
                 />
 
                 <div className="space-y-8">
                   {/* Settings Section */}
                   <div className="space-y-6">
                     <div 
-                      onClick={() => window.innerWidth < 1024 && setIsSheetExpanded(!isSheetExpanded)}
+                      onClick={() => {
+                         if (window.innerWidth < 1024) {
+                           const nextState = !isSheetExpanded;
+                           setIsSheetExpanded(nextState);
+                           setSheetHeight(nextState ? window.innerHeight * 0.85 : 180);
+                         }
+                      }}
                       className="flex justify-between items-center mb-2 cursor-pointer lg:cursor-default"
                     >
                       <h2 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] flex items-center gap-2">

@@ -21,7 +21,7 @@ const ensurePiexif = (): Promise<void> => {
   });
 };
 
-const COLORS = ['text-cyan-400', 'text-emerald-400', 'text-purple-400', 'text-amber-400', 'text-pink-400', 'text-blue-400'];
+const COLORS = ['text-white', 'text-black', 'text-slate-400', 'text-zinc-600'];
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
 
 const generateChunk = () => Array.from({ length: 8 }).map(() => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
@@ -44,44 +44,48 @@ const CryptoBackground: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const grid = useMemo(() => {
-    // Large grid to accommodate various screen sizes and zoom levels
-    return Array.from({ length: 60 }).map((_, rIdx) => {
-      const cols = Array.from({ length: 15 }).map((_, cIdx) => ({
-        id: `${rIdx}-${cIdx}`,
-        initial: generateChunk(),
-        color: COLORS[Math.floor(Math.random() * COLORS.length)]
-      }));
-      return cols;
-    });
+  // Generate 150 random floating cryptographic chunks
+  const randomNodes = useMemo(() => {
+    return Array.from({ length: 150 }).map((_, i) => ({
+      id: `node-${i}`,
+      initial: generateChunk(),
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`
+    }));
   }, []);
 
   return (
-    <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none select-none font-mono text-[8px] md:text-[10px] leading-[2.5] whitespace-nowrap z-0 opacity-80 flex justify-center">
-      {/* Base Layer (Faint, Static White) */}
-      <div className="absolute inset-0 flex flex-col justify-between items-center opacity-[0.03]">
-        {grid.map((row, rIdx) => (
-          <div key={rIdx} className="flex gap-4 md:gap-8">
-            {row.map(col => <span key={col.id} data-crypto className="text-white">{col.initial}</span>)}
-          </div>
+    <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none select-none font-mono text-[8px] md:text-[10px] leading-[2.5] whitespace-nowrap z-0 opacity-80">
+      {/* Base Layer (Faint, Static) */}
+      <div className="absolute inset-0 opacity-[0.05]">
+        {randomNodes.map(node => (
+          <span 
+            key={node.id} 
+            data-crypto 
+            className="absolute text-white"
+            style={{ top: node.top, left: node.left }}
+          >
+            {node.initial}
+          </span>
         ))}
       </div>
       
-      {/* Highlight Layer (Colored, Glowing, Masked) */}
-      <div className="absolute inset-0 flex flex-col justify-between items-center crypto-mask">
-        {grid.map((row, rIdx) => (
-          <div key={rIdx} className="flex gap-4 md:gap-8">
-            {row.map(col => (
-              <span 
-                key={col.id} 
-                data-crypto 
-                className={`${col.color} font-bold`}
-                style={{ textShadow: '0 0 10px currentColor' }}
-              >
-                {col.initial}
-              </span>
-            ))}
-          </div>
+      {/* Highlight Layer (Masked, Glowing Monochrome) */}
+      <div className="absolute inset-0 crypto-mask">
+        {randomNodes.map(node => (
+          <span 
+            key={`${node.id}-highlight`} 
+            data-crypto 
+            className={`absolute ${node.color} font-bold`}
+            style={{ 
+              top: node.top, 
+              left: node.left,
+              textShadow: node.color === 'text-white' || node.color === 'text-slate-400' ? '0 0 10px rgba(255,255,255,0.8)' : 'none'
+            }}
+          >
+            {node.initial}
+          </span>
         ))}
       </div>
     </div>

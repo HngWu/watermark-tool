@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, type DragEvent } from 'react';
+import React, { useState, useRef, useEffect, useMemo, type DragEvent } from 'react';
 import { 
   Upload, Download, Shield, Fingerprint, Lock, AlertCircle, CheckCircle2, 
   Search, XCircle, Trash2, Loader2, Save, Plus, Palette, Info
@@ -19,6 +19,30 @@ const ensurePiexif = (): Promise<void> => {
     script.onerror = () => console.error('❌ Failed to load piexifjs');
     document.head.appendChild(script);
   });
+};
+
+const CryptoBackground: React.FC = () => {
+  const cryptoLines = useMemo(() => {
+    return Array.from({ length: 40 }).map(() => {
+      const chunks = Array.from({ length: 8 }).map(() => 
+        Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, '0').toUpperCase()
+      );
+      return chunks.join('  ');
+    });
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none select-none font-mono text-[10px] md:text-xs leading-loose tracking-[0.5em] whitespace-nowrap z-0 py-4">
+      {/* Base Layer */}
+      <div className="absolute inset-0 crypto-text-base flex flex-col justify-between">
+        {cryptoLines.map((line, i) => <div key={i} className="opacity-50">{line}</div>)}
+      </div>
+      {/* Highlight Layer */}
+      <div className="absolute inset-0 crypto-text-highlight flex flex-col justify-between">
+        {cryptoLines.map((line, i) => <div key={i}>{line}</div>)}
+      </div>
+    </div>
+  );
 };
 
 const App: React.FC = () => {
@@ -381,6 +405,8 @@ const App: React.FC = () => {
       <div className="fixed inset-0 pointer-events-none z-0 bg-[#050505] overflow-hidden">
         {/* Subtle grid */}
         <div className="absolute inset-0 security-grid opacity-50"></div>
+        {/* Cryptographic Text Animation */}
+        <CryptoBackground />
         {/* Scanning line */}
         <div className="scan-line"></div>
         {/* Mouse Follower Glow (Subtle White) */}

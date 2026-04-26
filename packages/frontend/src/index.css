@@ -40,17 +40,11 @@ body {
   100% { top: 100%; }
 }
 
-.crypto-text-base {
-  color: rgba(255, 255, 255, 0.03);
-}
-
-.crypto-text-highlight {
-  color: rgba(100, 200, 255, 0.8);
-  text-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.5) 50%, black 100%);
-  mask-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.5) 50%, black 100%);
-  -webkit-mask-size: 100% 200px;
-  mask-size: 100% 200px;
+.crypto-mask {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 50%, black 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 50%, black 100%);
+  -webkit-mask-size: 100% 250px;
+  mask-size: 100% 250px;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   animation: scan-mask 8s infinite linear;
@@ -58,8 +52,8 @@ body {
 
 @keyframes scan-mask {
   0% { 
-    -webkit-mask-position: 0 -200px; 
-    mask-position: 0 -200px;
+    -webkit-mask-position: 0 -250px; 
+    mask-position: 0 -250px;
   }
   100% { 
     -webkit-mask-position: 0 100vh; 

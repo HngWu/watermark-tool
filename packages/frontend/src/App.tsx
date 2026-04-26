@@ -21,25 +21,68 @@ const ensurePiexif = (): Promise<void> => {
   });
 };
 
+const COLORS = ['text-cyan-400', 'text-emerald-400', 'text-purple-400', 'text-amber-400', 'text-pink-400', 'text-blue-400'];
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+
+const generateChunk = () => Array.from({ length: 8 }).map(() => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+
 const CryptoBackground: React.FC = () => {
-  const cryptoLines = useMemo(() => {
-    return Array.from({ length: 40 }).map(() => {
-      const chunks = Array.from({ length: 8 }).map(() => 
-        Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, '0').toUpperCase()
-      );
-      return chunks.join('  ');
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!containerRef.current) return;
+      const elements = containerRef.current.querySelectorAll('[data-crypto]');
+      // Scramble 15% of elements every 50ms to create dynamic gibberish
+      const numToScramble = Math.max(1, Math.floor(elements.length * 0.15));
+      for (let i = 0; i < numToScramble; i++) {
+        const idx = Math.floor(Math.random() * elements.length);
+        const el = elements[idx] as HTMLElement;
+        el.innerText = generateChunk();
+      }
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
+
+  const grid = useMemo(() => {
+    // Large grid to accommodate various screen sizes and zoom levels
+    return Array.from({ length: 60 }).map((_, rIdx) => {
+      const cols = Array.from({ length: 15 }).map((_, cIdx) => ({
+        id: `${rIdx}-${cIdx}`,
+        initial: generateChunk(),
+        color: COLORS[Math.floor(Math.random() * COLORS.length)]
+      }));
+      return cols;
     });
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none select-none font-mono text-[10px] md:text-xs leading-loose tracking-[0.5em] whitespace-nowrap z-0 py-4">
-      {/* Base Layer */}
-      <div className="absolute inset-0 crypto-text-base flex flex-col justify-between">
-        {cryptoLines.map((line, i) => <div key={i} className="opacity-50">{line}</div>)}
+    <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none select-none font-mono text-[8px] md:text-[10px] leading-[2.5] whitespace-nowrap z-0 opacity-80 flex justify-center">
+      {/* Base Layer (Faint, Static White) */}
+      <div className="absolute inset-0 flex flex-col justify-between items-center opacity-[0.03]">
+        {grid.map((row, rIdx) => (
+          <div key={rIdx} className="flex gap-4 md:gap-8">
+            {row.map(col => <span key={col.id} data-crypto className="text-white">{col.initial}</span>)}
+          </div>
+        ))}
       </div>
-      {/* Highlight Layer */}
-      <div className="absolute inset-0 crypto-text-highlight flex flex-col justify-between">
-        {cryptoLines.map((line, i) => <div key={i}>{line}</div>)}
+      
+      {/* Highlight Layer (Colored, Glowing, Masked) */}
+      <div className="absolute inset-0 flex flex-col justify-between items-center crypto-mask">
+        {grid.map((row, rIdx) => (
+          <div key={rIdx} className="flex gap-4 md:gap-8">
+            {row.map(col => (
+              <span 
+                key={col.id} 
+                data-crypto 
+                className={`${col.color} font-bold`}
+                style={{ textShadow: '0 0 10px currentColor' }}
+              >
+                {col.initial}
+              </span>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );

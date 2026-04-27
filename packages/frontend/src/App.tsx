@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo, type DragEvent } from 'react';
+import React, { useState, useRef, useEffect, type DragEvent } from 'react';
 import { 
   Upload, Download, Shield, Fingerprint, Lock, AlertCircle, CheckCircle2, 
   Search, XCircle, Trash2, Loader2, Save, Plus, Palette, Info

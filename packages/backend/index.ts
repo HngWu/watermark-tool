@@ -21,6 +21,36 @@ const pool = mysql.createPool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
 });
 
+const initializeDatabase = async () => {
+  try {
+    const conn = await pool.getConnection();
+    
+    // Ensure templates table exists
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS templates (
+        id VARCHAR(36) PRIMARY KEY,
+        name VARCHAR(255),
+        config JSON,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Ensure settings table exists
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS settings (
+        setting_key VARCHAR(50) PRIMARY KEY,
+        value JSON,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+
+    console.log('Database schema verified successfully.');
+    conn.release();
+  } catch (error) {
+    console.error('Failed to initialize database schema:', error);
+  }
+};
+
 app.get('/api/health', async (req, res) => {
   try {
     const conn = await pool.getConnection();
@@ -62,6 +92,9 @@ app.post('/api/sync', async (req, res) => {
     res.status(500).json({ status: 'error', message: 'Sync failed' });
   }
 });
+
+// Initialize database on startup
+initializeDatabase();
 
 if (process.env.NODE_ENV !== 'production') {
   app.listen(3001, () => console.log('Backend running on port 3001'));
